@@ -35,9 +35,9 @@ enum {
 	XORN,	/* Bitwise XOR between source value and destination register. */
 	NEG,	/* Bitwise negation of a register. */
 
-	CMP,	/* Comparison of source register to destination register .*/
-	CMPN,	/* Comparison of source value to destination value. */
-	TEST,	/* Comparison of source register to zero. */
+	CMP,	/* Compare source register to destination register .*/
+	CMPN,	/* Compare source register to destination value. */
+	TEST,	/* Compare source register to zero. */
 
 	JMP,	/* Unconditional jump to address. */
 	JE,	/* Jump to address if last comparison was equal. */
@@ -52,7 +52,7 @@ enum {
 	CALL,	/* Push the PC on stack and jump to address. */
 	RET,	/* Pop a value from stack and 'return' to it. */
 
-	IN,	/* Read a byte from stdin. */
+	IN,	/* Read a byte from standard input. */
 	OUT,	/* Write a value from register to standard output. */
 	OUTN,	/* Write a value to standard output. */
 

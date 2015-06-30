@@ -25,8 +25,8 @@ bvm_new(void)
 	return vm;
 }
 
-/* Returns the current value pointed by BVM's program counter, which
- * will the be incremented to point to the next byte. */
+/* Increment a BVM instance's program counter while returning
+ * current value it's pointing to. */
 static inline uint8_t
 pc_next(bvm_t *vm)
 {
