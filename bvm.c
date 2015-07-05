@@ -69,8 +69,7 @@ bvm_run(bvm_t *vm, const uint8_t *code, size_t code_size)
 	memset(vm->mem, 0, sizeof(vm->mem));
 
 	/* Load program code into memory. */
-	for (size_t i = 0; i < code_size; i++)
-		vm->mem[i] = code[i];
+	memcpy(vm->mem, code, code_size);
 
 	/* Reset the clock. */
 	vm->clk = 0;

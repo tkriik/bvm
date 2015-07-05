@@ -10,12 +10,16 @@ main(void)
 	setbuf(stdout, NULL);
 
 	const uint8_t program[] = {
-		MOVN,	128,	XR,
-		TEST,	XR,
-		JE,	13,
-		PUSHN,	65,
-		DEC,	XR,
-		JMP,	3,
+		IN,	R0,
+		JEOF,	22,
+		CMPN,	R0,	'\t',
+		JE,	0,
+		CMPN,	R0,	'\n',
+		JE,	0,
+		CMPN,	R0,	' ',
+		JE,	0,
+		OUT,	R0,
+		JMP,	0,
 		HALT
 	};
 
