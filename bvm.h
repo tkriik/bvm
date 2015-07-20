@@ -69,8 +69,15 @@ enum {
 	R4, R5, R6, R7
 };
 
-/* BVM type alias. */
-typedef struct _bvm bvm_t;
+#define BVM_REGSIZE 12	/* BVM register count. */
+#define BVM_MEMSIZE 256 /* BVM memory size. */
+
+/* BVM type definition. */
+typedef struct _bvm {
+	uint8_t	reg[BVM_REGSIZE];	/* Register file. */
+	uint8_t	mem[BVM_MEMSIZE];	/* Memory. */
+	size_t	clk;			/* Cycle clock. */
+} bvm_t;
 
 /* BVM errors. */
 enum {
@@ -80,8 +87,6 @@ enum {
 };
 
 /* BVM routines. */
-bvm_t	*bvm_new(void);
-void	 bvm_delete(bvm_t *);
 int	 bvm_run(bvm_t *, const uint8_t *, size_t);
 size_t	 bvm_clock(bvm_t *);
 void	 bvm_dump(bvm_t *);

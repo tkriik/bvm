@@ -6,28 +6,13 @@
 
 #include "bvm.h"
 
-#define BVM_CYCLE	1000	/* BVM cycle interval in microseconds. */
-#define BVM_REGSIZE	12	/* BVM register count. */
-#define BVM_MEMSIZE	256	/* BVM memory size. */
+#define BVM_CYCLE 1000 /* BVM cycle interval in microseconds. */
 
-/* BVM type definition. */
-struct _bvm {
-	uint8_t	reg[BVM_REGSIZE];	/* Register file. */
-	uint8_t	mem[BVM_MEMSIZE];	/* Memory. */
-	size_t	clk;			/* Cycle clock. */
-};
-
-/* Allocates a new BVM instance. */
-bvm_t *
-bvm_new(void)
-{
-	bvm_t *vm = calloc(1, sizeof(*vm));
-	return vm;
-}
-
-/* Increment a BVM instance's program counter while returning
- * current value it's pointing to. */
-static inline uint8_t
+/*
+ * Increment a BVM instance's program counter while returning
+ * current value it's pointing to.
+ * */
+static uint8_t
 pc_next(bvm_t *vm)
 {
 	return vm->mem[vm->reg[PC]++];
@@ -277,8 +262,10 @@ bvm_run(bvm_t *vm, const uint8_t *code, size_t code_size)
 			if (!IS_REGISTER_VALID(src) || !IS_REGISTER_VALID(dst))
 				return BVM_BAD_INSTRUCTION;
 			vm->reg[CC]  = 0;
-			vm->reg[CC] |= (vm->reg[src] == vm->reg[dst]) << CC_EQ_SHIFT;
-			vm->reg[CC] |= (vm->reg[src]  < vm->reg[dst]) << CC_OF_SHIFT;
+			vm->reg[CC] |= (vm->reg[src] == vm->reg[dst])
+			    << CC_EQ_SHIFT;
+			vm->reg[CC] |= (vm->reg[src]  < vm->reg[dst])
+			    << CC_OF_SHIFT;
 			continue;
 
 		case CMPN:
