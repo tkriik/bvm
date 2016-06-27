@@ -1,9 +1,8 @@
-CC=		cc
-CFLAGS=		-g -std=gnu99 -Wall -Wextra
+CC=
+CFLAGS=		-g -ansi -pedantic -Wall -Wextra -D_DEFAULT_SOURCE
 
-HEADERS=	bvm.h
-SOURCES=	main.c bvm.c
-BVM=		bvm
+SRC=		main.c bvm.c
+BIN=		bvm
 
 all:
-	$(CC) $(CFLAGS) -o $(BVM) $(SOURCES)
+	$(CC) $(CFLAGS) -o $(BIN) $(SRC)
