@@ -10,10 +10,10 @@
 
 /*
  * Increment a BVM instance's program counter while returning
- * current value it's pointing to.
- * */
+ * the current value it's pointing to.
+ */
 static uint8_t
-pc_next(bvm_t *vm)
+pc_next(struct bvm *vm)
 {
 	return vm->mem[vm->reg[PC]++];
 }
@@ -43,7 +43,7 @@ enum {
 /* Executes a program in a BVM instance until termination.
  * Returns a non-zero error code if an error occurred. */
 int
-bvm_run(bvm_t *vm, const uint8_t *code, size_t code_size)
+bvm_run(struct bvm *vm, const uint8_t *code, size_t code_size)
 {
 	/* Code size must fit into BVM's memory. */
 	if (code_size > sizeof(vm->mem))
@@ -60,13 +60,14 @@ bvm_run(bvm_t *vm, const uint8_t *code, size_t code_size)
 	vm->clk = 0;
 
 	while (1) {
+		uint8_t	op;
+		uint8_t	src, dst;
+		int	c;
+
 		usleep(BVM_CYCLE);
 		vm->clk++;
 
-		uint8_t op = pc_next(vm);
-		uint8_t src, dst;
-		int c;
-
+		op = pc_next(vm);
 		switch (op) {
 		case HALT:
 			return 0;
@@ -383,26 +384,49 @@ bvm_run(bvm_t *vm, const uint8_t *code, size_t code_size)
 
 /* Returns a BVM instance's cycle clock value. */
 size_t
-bvm_clock(bvm_t *vm)
+bvm_clock(struct bvm *vm)
 {
 	return vm->clk;
 }
 
-/* Dumps a BVM instance's register file and memory to standard error output. */
+/*
+ * Dumps a BVM instance's register file, clock and memory
+ * to standard error output.
+ */
 void
-bvm_dump(bvm_t *vm)
+bvm_dump(struct bvm *vm)
 {
-	for (size_t i = 0; i < BVM_MEMSIZE; i += 16) {
+	size_t i, j;
+
+	fprintf(stderr,
+"PC: 0x%02x"							"\n"
+"SP: 0x%02x"							"\n"
+"CC: 0x%02x"							"\n"
+"XR: 0x%02x"							"\n"
+								"\n"
+"R0: 0x%02x	R1: 0x%02x	R2: 0x%02x	R3: 0x%02x"	"\n"
+"R4: 0x%02x	R5: 0x%02x	R6: 0x%02x	R7: 0x%02x"	"\n"
+								"\n",
+	    vm->reg[PC], vm->reg[SP], vm->reg[CC], vm->reg[XR],
+	    vm->reg[R0], vm->reg[R1], vm->reg[R2], vm->reg[R3],
+	    vm->reg[R4], vm->reg[R5], vm->reg[R6], vm->reg[R7]);
+
+	fprintf(stderr,
+"CLK: %d"	"\n"
+		"\n",
+	    (int)vm->clk);
+
+	for (i = 0; i < BVM_MEMSIZE; i += 16) {
 		fprintf(stderr, "0x%02x: ", (unsigned int)i);
 
-		for (size_t j = 0; j < 16; j++) {
+		for (j = 0; j < 16; j++) {
 			fprintf(stderr, " %02x", vm->mem[i + j]);
 			if (j == 7)
 				fputc(' ', stderr);
 		}
 
 		fprintf(stderr, "  |");
-		for (size_t j = 0; j < 16; j++) {
+		for (j = 0; j < 16; j++) {
 			char c = vm->mem[i + j];
 			fputc(isprint(c) ? c : '.', stderr);
 		}

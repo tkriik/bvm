@@ -72,12 +72,12 @@ enum {
 #define BVM_REGSIZE 12	/* BVM register count. */
 #define BVM_MEMSIZE 256 /* BVM memory size. */
 
-/* BVM type definition. */
-typedef struct _bvm {
+/* bvm structure. */
+struct bvm {
 	uint8_t	reg[BVM_REGSIZE];	/* Register file. */
 	uint8_t	mem[BVM_MEMSIZE];	/* Memory. */
 	size_t	clk;			/* Cycle clock. */
-} bvm_t;
+};
 
 /* BVM errors. */
 enum {
@@ -87,8 +87,8 @@ enum {
 };
 
 /* BVM routines. */
-int	 bvm_run(bvm_t *, const uint8_t *, size_t);
-size_t	 bvm_clock(bvm_t *);
-void	 bvm_dump(bvm_t *);
+int	 bvm_run(struct bvm *, const uint8_t *, size_t);
+size_t	 bvm_clock(struct bvm *);
+void	 bvm_dump(struct bvm *);
 
 #endif

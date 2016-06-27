@@ -2,31 +2,18 @@
 #include <stdio.h>
 
 #include "bvm.h"
+#include "prog.h"
 
 int
 main(void)
 {
-	/* Disable buffering on standard output. */
+	struct bvm vm;
+
 	setbuf(stdout, NULL);
 
-	const uint8_t program[] = {
-		IN,	R0,
-		JEOF,	22,
-		CMPN,	R0,	'\t',
-		JE,	0,
-		CMPN,	R0,	'\n',
-		JE,	0,
-		CMPN,	R0,	' ',
-		JE,	0,
-		OUT,	R0,
-		JMP,	0,
-		HALT
-	};
+	fprintf(stderr, "Running program... (%d bytes)\n", (int)sizeof(PROG));
 
-	fprintf(stderr, "Running program... (%zu bytes)\n", sizeof(program));
-
-	bvm_t vm;
-	switch (bvm_run(&vm, program, sizeof(program))) {
+	switch (bvm_run(&vm, PROG, sizeof(PROG))) {
 	case BVM_BAD_INSTRUCTION:
 		fprintf(stderr, "Illegal instruction.\n");
 		bvm_dump(&vm);
@@ -36,8 +23,6 @@ main(void)
 		return -1;
 	}
 
-	fprintf(stderr, "Program finished with %zu instructions.\n",
-	    bvm_clock(&vm));
 	bvm_dump(&vm);
 
 	return 0;
